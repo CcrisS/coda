@@ -1,0 +1,40 @@
+{% extends 'BackendBundle::layout.html.twig' %}
+
+{% block body -%}
+    <h1 class="page-header">Acuerdos</h1>
+
+    <a class="btn btn-primary pull-right" href="{{ path('deal_create') }}"><i class="fa fa-plus"></i> Nuevo acuerdo</a>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Empresas</th>
+            <th>Fechas</th>
+            <th>&nbsp;</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for entity in entities %}
+            <tr>
+                <td>{{ entity.name }}</td>
+                <td>
+                    {% for node in entity.nodes %}
+                        {% if loop.first %}
+                            {{ node.connection.initialCompany }}
+                        {% endif %}
+                        <i class="fa fa-chevron-right"></i> {{ node.connection.endCompany }}
+                    {% endfor %}
+                </td>
+                <td>{{ entity.startDate|date('Y-m-d') ~ '...' ~ entity.endDate|date('Y-m-d') }}</td>
+
+                <td>
+                    <a href="{{ path('deal_update', { 'id': entity.id }) }}" class="btn btn-xs btn-default">Editar</a>
+                    <a href="{{ path('deal_delete', { 'id': entity.id }) }}" class="btn btn-xs btn-danger jConfirm">Eliminar</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

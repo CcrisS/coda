@@ -1,0 +1,47 @@
+{% extends 'BackendBundle::layout.html.twig' %}
+
+{% block body -%}
+    <h1 class="page-header">
+        Conexiones
+        <small><a class="btn btn-primary pull-right" href="{{ path('connection_create') }}"><i class="fa fa-plus"></i> Nueva conexión</a></small>
+    </h1>
+
+    <div class="row">
+        {{ form_start(form) }}
+            <div class="col-md-5">{{ form_row(form.company) }}</div>
+            <div class="col-md-4">{{ form_row(form.type) }}</div>
+            <div class="col-md-3" style="margin-top: 24px;">
+                {{ form_widget(form.save) }}
+                <a href="{{ path('connection') }}" class="btn btn-default">Quitar filtros</a>
+            </div>
+        {{ form_end(form) }}
+    </div><hr>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th class="sorted">{{ knp_pagination_sortable(entitiesPagination, 'Nombre', 'ic.name') }}</th>
+            <th class="sorted">{{ knp_pagination_sortable(entitiesPagination, 'Tipo', 'c.isProvider') }}</th>
+            <th>&nbsp;</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for entity in entitiesPagination %}
+            <tr>
+                <td>{{ entity.initialCompany }} <i class="fa fa-chevron-right"></i> {{ entity.endCompany }}</td>
+                <td>{{ entity.typeStr|upper }}</td>
+
+                <td>
+                    <a href="{{ path('connection_update', { 'id': entity.id }) }}" class="btn btn-xs btn-default">Editar</a>
+                    <a href="{{ path('connection_delete', { 'id': entity.id }) }}" class="btn btn-xs btn-danger jConfirm">Eliminar</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="navigation">
+        {{ knp_pagination_render(entitiesPagination) }}
+    </div>
+
+{% endblock %}

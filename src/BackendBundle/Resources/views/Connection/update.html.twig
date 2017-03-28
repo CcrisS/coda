@@ -1,0 +1,16 @@
+{% extends 'BackendBundle::layout.html.twig' %}
+
+{% block body -%}
+    <h1 class="page-header">Crear conexión</h1>
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+
+        <hr/>
+        <div class="row form-actions text-center">
+            <a class="btn btn-default" href="{{ path('connection') }}"><i class="fa fa-reply"></i> Volver</a>
+            <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> Guardar</button>
+        </div>
+    {{ form_end(form) }}
+
+{% endblock %}

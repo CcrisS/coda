@@ -1,0 +1,36 @@
+{% extends 'BackendBundle::layout.html.twig' %}
+
+{% block body -%}
+    <h1 class="page-header">
+        Empresas
+        <small><a class="btn btn-primary pull-right" href="{{ path('company_create') }}"><i class="fa fa-plus"></i> Nueva empresa</a></small>
+    </h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in entitiesPagination %}
+            <tr>
+                <td>
+                    <label class="label label-default">{{ entity.id }}</label> {{ entity.name }}
+                </td>
+                <td>
+                    <a href="{{ path('company_update', { 'id': entity.id }) }}" class="btn btn-xs btn-default">Editar</a>
+                    <a href="{{ path('connection', { 'filter':{'company_id': entity.id} }) }}" class="btn btn-xs btn-default">Ver conexiones</a>
+                    <a href="{{ path('company_delete', { 'id': entity.id }) }}" class="btn btn-xs btn-danger jConfirm">Eliminar</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="navigation">
+        {{ knp_pagination_render(entitiesPagination) }}
+    </div>
+
+{% endblock %}

@@ -1,0 +1,107 @@
+{% extends 'BackendBundle::layout.html.twig' %}
+
+{% block body -%}
+	<h1 class="page-header">Actualizar acuerdo</h1>
+
+	{{ form_start(form) }}
+
+	<div class="row">
+		<div class="col-md-5 right-border">
+			{{ form_row(form.name) }}
+			{{ form_row(form.startDate) }}
+			{{ form_row(form.endDate) }}
+		</div>
+		<div class="col-md-7">
+			<h3>Empresas</h3>
+
+			{{ form_row(form.nodes) }}
+			<a href="#" class="btn btn-primary btn-xs jAddItem" title="add item" onclick="addItemForm()">
+				<i class="fa fa-plus"></i> Añadir conexión</a>
+
+			{{ form_rest(form) }}
+		</div>
+	</div>
+
+	<hr/>
+	<div class="row form-actions text-center">
+		<a class="btn btn-default" href="{{ path('deal') }}"><i class="fa fa-reply"></i> Volver</a>
+		<button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> Guardar</button>
+	</div>
+	{{ form_end(form) }}
+
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+
+	<script>
+
+		/**
+		 * Manage deal nodes
+		 */
+		var $collectionHolder;
+		var collectionName = 'corebundle_deal_nodes';
+
+		function isUndefined(value){
+			var undefined = void(0);
+			return value === undefined;
+		}
+
+		function getNewItemForm()
+		{
+			var index = $collectionHolder.data('index');
+			$collectionHolder.data('index', index + 1);
+
+			var prototype = $collectionHolder.data('prototype');
+			var $newItem = $(prototype.replace(/__name__label__/g, '').replace(/__name__/g, index));
+			$newItem.find('[name$="[level]"]').val(index+1);
+
+			return $newItem;
+		}
+
+		function addItemForm() {
+			var index = $collectionHolder.data('index');
+
+			// get new item form
+			if(index == 0){ // first node
+				var $newItem = getNewItemForm();
+				$collectionHolder.append($newItem);
+			} else { // any other node
+				var $previousInput = $('#'+collectionName+'_'+(index-1)).find('[name$="[connection]"]');
+				var previousConnectionId = $previousInput.val();
+				if(isUndefined(previousConnectionId) || previousConnectionId.length == 0){
+					alert('Debe introducir una conexión previa.');
+					return false;
+				}
+
+				//$previousInput.prop('disabled', true);
+				$.ajax({
+					url: "{{ path('deal_node_form') }}",
+					data: {'previousConnectionId': previousConnectionId}
+				}).done(function(htmlFormItem) {
+					var options = $(htmlFormItem).find('select').find('option');
+					if(options.length <= 1){
+						alert('No existen conexiones posibles.');
+						return false;
+					}
+
+					var $newItem = getNewItemForm();
+					$newItem.find('select').find('option').remove().end().append(options);
+					$collectionHolder.append($newItem);
+				});
+			}
+		}
+
+		$(function() {
+			$collectionHolder = $('#'+collectionName);
+			$collectionHolder.data('index', $collectionHolder.find("div[id^='"+collectionName+"_']").length);
+
+			// add the first node
+			if($("div[id^='"+collectionName+"_']").length == 0){
+				addItemForm();
+			}
+		});
+
+	</script>
+
+{% endblock %}
