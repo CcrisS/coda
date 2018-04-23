@@ -1,4 +1,4 @@
-# cajun
+# coda
 
 > Symfony project with admin panel and customer area to manage companies and deals.
 
